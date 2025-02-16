@@ -4,6 +4,7 @@
 
 import axios from 'axios';
 import * as cheerio from 'cheerio';
+import type {Section} from '../types/interfaces';
 
 const LINK = "https://wiki.gtnewhorizons.com/wiki/Main_Page"; // Link to GTNH wiki
 const headers = {
@@ -25,19 +26,28 @@ const headers = {
  * }
  */
 
-async function getData(): Promise<string[]> {
-    try {
-        const response = await axios.get(LINK, { headers });
-        const $ = cheerio.load(response.data);
-        const links: string[] = [];
-        $('a[href]').each((index, element) => {
-            links.push($(element).attr('href') as string);
+async function mainPage() {
+    const response = await axios.get(LINK, { headers });
+    const $ = cheerio.load(response.data);
+    const mainGtnh = $('td[colspan="2"][rowspan = "2"]').text();
+    console.log(mainGtnh);
+    const sections: Section[] = [];
+
+        $('table.wikitable').each((index, table) => {
+            const title = $(table).find('tr:first-child td:first-child b').text().trim();
+            const links: { href: string; title: string }[] = [];
+
+            $(table).find('tr:nth-child(2) a').each((i, link) => {
+                links.push({
+                    href: $(link).attr('href') as string,
+                    title: $(link).attr('title') as string
+                });
+            });
+
+            sections.push({ title, links });
         });
-        return links;
-    } catch (error) {
-        console.error('Error fetching data:', error);
-        return [];
-    }
+
+        return sections;
 }
 
-getData().then(links => console.log(links));
+mainPage().then(r => console.log(r)).catch(e => console.error(e));
