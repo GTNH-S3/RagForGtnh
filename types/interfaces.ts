@@ -5,7 +5,7 @@ export interface Section {
     links: { href: string; title: string }[];
 }
 
-export const schema = {
+export const schemaKeyWord = {
     description: "List of keywords",
     type: SchemaType.ARRAY,
     items: {
@@ -21,3 +21,19 @@ export const schema = {
     },
 };
 
+export const schemaofDecompositon = {
+    description: "List of decomposed sentences",
+    type: SchemaType.ARRAY,
+    items: {
+        type: SchemaType.OBJECT,
+        properties: {
+            subQuery: {
+                type: SchemaType.STRING,
+                description: "The decomposed sentence",
+                nullable: false,
+            },
+        },
+        required: ["subQuery"],
+    },
+
+}

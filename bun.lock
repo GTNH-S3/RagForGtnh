@@ -8,6 +8,7 @@
         "axios": "^1.7.9",
         "cheerio": "^1.0.0",
         "dotenv": "^16.4.7",
+        "ts-postgres": "^2.0.4",
       },
       "devDependencies": {
         "@types/bun": "latest",
@@ -111,6 +112,8 @@
     "proxy-from-env": ["proxy-from-env@1.1.0", "", {}, "sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg=="],
 
     "safer-buffer": ["safer-buffer@2.1.2", "", {}, "sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg=="],
+
+    "ts-postgres": ["ts-postgres@2.0.4", "", { "peerDependencies": { "@types/node": "^20" } }, "sha512-KQL9xd4C2tVJdV+bshA5q9KikMrqfyc1MRQCGYF5QQSBAz+prpK/b4U1wiywOLtIBzgvFfXrvEZULu3Yp7GDsg=="],
 
     "typescript": ["typescript@5.7.3", "", { "bin": { "tsc": "bin/tsc", "tsserver": "bin/tsserver" } }, "sha512-84MVSjMEHP+FQRPy3pX9sTVV/INIex71s9TL2Gm5FG/WG1SqXeKyZ0k7/blY/4FdOzI12CBy1vGc4og/eus0fw=="],
 
