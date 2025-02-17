@@ -65,13 +65,14 @@ async function mainPage(): Promise<Section[]> {
     return sections;
 }
 
-const selection = mainPage();
 
+// Inserting the data into the database
+const selection = mainPage();
 selection.then(data => {
     data.forEach((item) => {
         item.links.forEach((link) => {
             console.log(link.title);
-            mainPageInsert(link.title, link.href, item.title
+            mainPageInsert(link.title, link.href, item.title  // Inserting the data into the database
             ).then(() => {
                 console.log('Inserted');
             }).catch((err) => {
@@ -80,3 +81,6 @@ selection.then(data => {
         });
     });
 });
+
+
+

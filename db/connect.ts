@@ -12,14 +12,20 @@ if (!HOST || !PORT || !USER || !PASSWORD || !DATABASE) {
     throw new Error('Database connection information is not set in the environment variables');
 }
 
-export const client = await connect({
-    host: HOST,
-    port: parseInt(PORT),
-    user: USER,
-    password: PASSWORD,
-    database: DATABASE,
-});
 
-
+export const client = await (async () => {
+    try {
+        return await connect({
+            host: HOST,
+            port: parseInt(PORT),
+            user: USER,
+            password: PASSWORD,
+            database: DATABASE
+        });
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+})();
 
 

@@ -37,3 +37,8 @@ export const schemaofDecompositon = {
     },
 
 }
+
+export interface WikiPages {
+    title: string;
+    content: string;
+}
