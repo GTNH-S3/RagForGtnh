@@ -65,22 +65,84 @@ async function mainPage(): Promise<Section[]> {
     return sections;
 }
 
+async function introduction(link: string): Promise<{ titles: string[], paragraphs: string[] }> {
+    const response = await axios.get(link, { headers });
+    const $ = cheerio.load(response.data);
+
+    const titles = $('h1, h2, h3').map((i, element) => $(element).text()).get();
+
+    const paragraphs = $('p,h1, h2, h3').map((i, element) => $(element).text()).get();
+
+
+
+    return { titles, paragraphs };
+}
+
+
+
+
+
+
+
+
 
 // Inserting the data into the database
-const selection = mainPage();
-selection.then(data => {
-    data.forEach((item) => {
-        item.links.forEach((link) => {
-            console.log(link.title);
-            mainPageInsert(link.title, link.href, item.title  // Inserting the data into the database
-            ).then(() => {
-                console.log('Inserted');
-            }).catch((err) => {
-                console.log(err);
-            });
-        });
-    });
-});
+// const selection = mainPage();
+// selection.then(data => {
+//     data.forEach((item) => {
+//         item.links.forEach((link) => {
+//             console.log(link.title);
+//             mainPageInsert(link.title, link.href, item.title  // Inserting the data into the database
+//             ).then(() => {
+//                 console.log('Inserted');
+//             }).catch((err) => {
+//                 console.log(err);
+//             });
+//         });
+//     });
+// });
 
 
+// Testing the introduction function
 
+const link = "https://wiki.gtnewhorizons.com/wiki/Low_End_PCs";
+
+const { titles, paragraphs } = await introduction(link);
+
+const data = { titles, paragraphs };
+
+const sectionsForDb = [];
+let currentSection = null;
+
+for (const item of data.paragraphs) {
+    if (data.titles.includes(item)) { // Check if the item is in titles array, meaning it's a title
+        if (currentSection) { // If we already have a section, push it to the sections array
+            sectionsForDb.push(currentSection);
+        }
+        currentSection = { // Start a new section with the new title
+            title: item,
+            paragraph_text: "" // Initialize paragraph text as empty, paragraphs will be appended
+        };
+    } else if (currentSection) { // If it's not a title and we have a current section, it's a paragraph
+        currentSection.paragraph_text += item + "\n\n"; // Append paragraph, add double newline for separation
+    }
+    // Handle initial paragraphs before the first heading "Contents" and "Low End PCs" as introduction
+    if (!currentSection && sectionsForDb.length === 0) {
+        if (!sectionsForDb[0]) {
+            sectionsForDb.push({ title: "Introduction", paragraph_text: "" });
+        }
+        sectionsForDb[0].paragraph_text += item + "\n\n";
+    }
+}
+
+if (currentSection) { // Push the last section after loop finishes
+    sectionsForDb.push(currentSection);
+}
+
+
+// Remove "Contents" and "Low End PCs"  sections if they exist as the first section
+if (sectionsForDb.length > 0 && (sectionsForDb[0].title === "Contents" || sectionsForDb[0].title === "Low End PCs")) {
+    sectionsForDb.shift(); // Remove the first element if it's "Contents" or "Low End PCs"
+}
+
+console.log(JSON.stringify(sectionsForDb, null, 2));

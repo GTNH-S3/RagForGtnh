@@ -42,3 +42,39 @@ export interface WikiPages {
     title: string;
     content: string;
 }
+
+
+export const schemaofChunk = {
+    description: "List of chunk sentences",
+    type: SchemaType.ARRAY,
+    items: {
+        type: SchemaType.OBJECT,
+        properties: {
+            chunk: {
+                type: SchemaType.STRING,
+                description: "Chunk",
+                nullable: false,
+            },
+            title: {
+                type: SchemaType.STRING,
+                description: "Title of the chunk",
+                nullable: true,
+            }
+        },
+        required: ["chunk", "title"]
+
+    }
+}
+
+export const schemaofTitle = {
+    description: "List of titles",
+    type: SchemaType.OBJECT,
+    properties: {
+        title: {
+            type: SchemaType.STRING,
+            description: "Title of the chunk",
+            nullable: true,
+        }
+    },
+    required: ["title"]
+}
