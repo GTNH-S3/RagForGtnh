@@ -44,7 +44,8 @@ export interface WikiPages {
 }
 
 
-export const schemaofChunk = {
+// Schema definition for chunking
+export const schemaOfChunk = {
     description: "List of chunk sentences",
     type: SchemaType.ARRAY,
     items: {
@@ -55,26 +56,20 @@ export const schemaofChunk = {
                 description: "Chunk",
                 nullable: false,
             },
-            title: {
-                type: SchemaType.STRING,
-                description: "Title of the chunk",
-                nullable: true,
-            }
         },
-        required: ["chunk", "title"]
-
+        required: ["chunk"]
     }
-}
+};
 
-export const schemaofTitle = {
-    description: "List of titles",
+export const schemeSummery = {
+    description: "Summery of the all chunk",
     type: SchemaType.OBJECT,
     properties: {
-        title: {
+        sum: {
             type: SchemaType.STRING,
-            description: "Title of the chunk",
+            description: "summery of the chunk",
             nullable: true,
         }
     },
-    required: ["title"]
+    required: ["sum"]
 }
