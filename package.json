@@ -11,11 +11,17 @@
   },
   "dependencies": {
     "@google/generative-ai": "^0.21.0",
+    "@huggingface/transformers": "^3.3.3",
     "axios": "^1.7.9",
     "cheerio": "^1.0.0",
     "dotenv": "^16.4.7",
     "pdf-parse": "^1.1.1",
     "pdf-ts": "^0.0.2",
-    "ts-postgres": "^2.0.4"
+    "pgvector": "^0.2.0",
+    "pgvector-ts": "^0.1.2",
+    "tokenizer": "^1.1.2",
+    "tokenizr": "^1.7.0",
+    "ts-postgres": "^2.0.4",
+    "voyageai": "^0.0.3-1"
   }
 }

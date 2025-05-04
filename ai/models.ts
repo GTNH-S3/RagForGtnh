@@ -1,6 +1,6 @@
 import {config} from "dotenv";
 import {GoogleGenerativeAI} from "@google/generative-ai";
-import {schemaKeyWord, schemaofChunk, schemaofDecompositon, schemaofTitle} from "../types/interfaces.ts";
+import {schemaKeyWord, schemaOfChunk, schemaofDecompositon, schemeSummery} from "../types/interfaces.ts";
 
 config();
 export const GEMINI_API_KEY = process.env.GEMINI_API;
@@ -10,88 +10,117 @@ if (!GEMINI_API_KEY) {
 }
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 
+/**
+ * Model specialized for extracting technical keywords from GTNH-related content
+ * Targets specific GTNH terminology, mod names, and crafting mechanics
+ */
 export const model_keyword = genAI.getGenerativeModel({
     model: 'gemini-2.0-flash',
-    systemInstruction: 'Extract keywords from the provided text.',
+    systemInstruction: `Extract exactly 10–20 of the most important keywords from the input text, prioritizing GT New Horizons–specific terminology, mod names (e.g., GregTech, Thaumcraft), machines, items, blocks, game progression concepts, and technical processes. Always include key terms from the original question, even if they are general (e.g., GitHub, automation, electricity). All keywords must be single, complete words or compound terms (no breaking). The final list must represent a balance between game-specific terms and the exact context of the user’s query.`,
     generationConfig: {
+        temperature: 0.1,
+        topK: 20,
+        topP: 0.9,
         responseSchema: schemaKeyWord,
         responseMimeType: 'application/json',
     }
 });
 
+/**
+ * Test model with basic GTNH information for simple queries
+ */
 export const model_test = genAI.getGenerativeModel({
     model: 'gemini-2.0-flash',
-    systemInstruction: ' Answer the question according to the "GT New Horizons (GTNH) is a Minecraft 1.7.10 modpack maintained and supported by dedicated community members just like you! With over 10 years in development, GTNH offers a carefully balanced and immersive experience to challenge players as they climb through the 15 tiers of technology. The ultimate goal of GTNH is to build the Stargate, an interdimensional teleporter and the symbol for absolute prestige, aptitude, and determination".'
+    systemInstruction: `Answer questions specifically about GT New Horizons (GTNH), a complex Minecraft 1.7.10 modpack with over 10 years of development history.
+
+GTNH features:
+- 15 distinct technology tiers with progression gates
+- Thousands of interconnected recipes and mechanics
+- GregTech 5 Unofficial as its core tech mod
+- Magic mods integrated with tech progression
+- Ultimate goal: building the Stargate interdimensional teleporter
+
+Only answer questions about GTNH. For any question outside this scope, respectfully decline and explain that you only provide information about GT New Horizons.`,
+    generationConfig: {
+        temperature: 0.2,
+        maxOutputTokens: 512,
+    }
 });
 
-
+/**
+ * Advanced query transformation model that decomposes complex GTNH questions
+ * into semantically diverse sub-queries for better retrieval
+ */
 export const model_queryTransformation = genAI.getGenerativeModel({
     model: 'gemini-2.0-flash',
-    systemInstruction: `Here the query is broken into sub-queries. Each sub-query is then answered using the basic RAG flow introduced at the start. Each answer is then fed into an LLM again along with the original question to synthesize the final answer. We can generate the sub-queries sequentially as shown above or all at the same time. For example, for the query 'Is the average temperature in summer in Berlin more than its average temperature in 2005' the sub-queries generated would be 'Current Average temperature in Berlin', 'Average temperature in Berlin in 2005', then using the answer of these two queries an LLM will be able to give us the final answer.
-Query decomposition is important as user queries that pose analytical or logical questions may not be directly stated in the document list. For example, there may be no sentence that says 'Berlin's average temperature today is less than it was in 2005', so doing a direct vector search with the user query would yield only irrelevant documents.`,
+    systemInstruction: `You are an expert query interpreter. Your primary function is to interpret user queries specifically about GT New Horizons (GTNH) by generating sub-queries according to the rules below.
+
+IF the user's query is about GT New Horizons: Strictly handle it as a GTNH query. For simple, direct questions, generate sub-queries that closely preserve the original intent without excessive variation. For complex queries, decompose into 3-4 strategically varied sub-queries using precise GTNH terminology. Always maintain semantic alignment with the original GTNH question - each sub-query should feel like a natural clarification or extension of what was asked. Expand simple GTNH queries with minimal additional context only when necessary. Always adhere to schema format while enforcing scope boundaries.
+
+IF the user's query is NOT about GT New Horizons (e.g., general topics, greetings, math problems): Recognize that the query is outside your GTNH interpretation scope. Do NOT attempt to interpret it using the GTNH rules or generate any sub-queries based on it. Handle the query as unrelated to your GTNH interpretation task.`,
     generationConfig: {
+        temperature: 0.3,
+        topK: 40,
+        topP: 0.95,
         responseSchema: schemaofDecompositon,
         responseMimeType: 'application/json'
     }
 });
 
+/**
+ * Model for chunking documents into semantically meaningful overlapping sections
+ * optimized for RAG retrieval with appropriate context preservation
+ */
 export const model_best_chunk = genAI.getGenerativeModel({
     model: 'gemini-2.0-flash',
-    systemInstruction: `Given a text, best chunk it into smaller parts of a maximum size of 500 characters. 
-You are an expert document chunking assistant. Your goal is to divide the given text into smaller, semantically coherent chunks suitable for a Retrieval-Augmented Generation (RAG) system.  Follow these instructions carefully to produce the best possible chunking in JSON format as defined by the provided schema.
-
-**Chunking Principles:**
-
-1.  **Prioritize Section and Subsection Structure:**
-    *   The document is structured with headings and subheadings.  **First and foremost, chunk the text by sections and subsections.** Each section or subsection should ideally become a separate chunk.
-    *   **Maintain Section Integrity:**  Do not split chunks across section or subsection boundaries unless absolutely necessary due to length constraints.
-    *   **Use Headings as Chunk Titles:**  Use the actual section or subsection heading as the "title" field for each chunk in the JSON output. For introductory content before the first section, use "Introduction" as the title. For concluding or summary sections, use "Conclusion" or appropriate summary titles.
-
-2.  **Semantic Coherence within Chunks:**
-    *   **Each chunk must be semantically self-contained and meaningful.**  A chunk should represent a complete idea, topic, or set of related information within the document.
-    *   **Prefer Paragraphs or Paragraph Groups:** Within a section or subsection, if it's still too long after section-based chunking, further divide it into chunks based on paragraphs or logical groups of paragraphs that discuss a single sub-topic.
-    *   **Avoid Arbitrary Splitting:**  Do not split sentences or phrases arbitrarily in the middle just to meet the character limit.  Prioritize natural breaks in the text (paragraph breaks, topic transitions).
-
-3.  **Maximum Chunk Size Constraint:**
-    *   **Strictly adhere to a maximum chunk size of 500 characters.** This is a hard limit.
-    *   **If a section, subsection, or paragraph exceeds 500 characters, you MUST split it.** Apply semantic chunking (point 2) within that longer section/paragraph to create multiple chunks, each under 500 characters.
-
-4.  **Table Handling:**
-    *   **Treat tables as distinct chunks.**  When you encounter a table, extract it as a **separate chunk.**
-    *   **Structure Table Chunks:**  Ideally, represent the table in a structured format within the JSON chunk (e.g., using nested JSON objects or arrays if the 'responseSchema' allows, or use a text-based table format like Markdown if schema is limited to string content).  If direct table structuring in JSON is not feasible due to schema constraints,  represent the table content as clearly formatted text, preserving rows and columns as much as possible using tabs or spaces for alignment.
-    *   **Include Table Title (if available):** If the table has a title or caption, use it as the "title" field for the table chunk. If not, generate a descriptive title like "Table: [Descriptive Topic]"
-
-5.  **Metadata and Noise Removal (Crucial):**
-    *   **Aggressively remove irrelevant metadata and noise from each chunk.**  This includes, but is not limited to:
-        *   **Page numbers:**  e.g., "1/3", "2/3", "3/3"
-        *   **Dates and Timestamps:** e.g., "2/21/25, 6:36 PM"
-        *   **URLs and Links:** e.g., "https://wiki.gtnewhorizons.com/...", "[https://...]"
-        *   **Navigation elements:** e.g., "[Expand]", "v · t · e" and associated links
-        *   **Copyright notices or footers:** Any repeating text at the bottom of pages (e.g., "Low End PCs - GT New Horizons...").
-        *   **Redundant Headings:**  Do not include the main document title ("GT New Horizons Low End PCs") repeatedly in every chunk unless it's genuinely part of a section heading.
-    *   **Focus on Content:** Ensure each chunk primarily contains the core informational content of the document, free from distractions.
-
-6.  **Output Format: JSON according to 'responseSchema'**:
-    *   **Your response MUST be in valid JSON format.**
-    *   **Strictly adhere to the 'responseSchema' provided in the 'generationConfig'.**  Ensure each chunk is represented as a JSON object with the fields defined in the schema (e.g., "title", "content", and potentially others like "section_level", "metadata" if your schema includes them).
-    *   **Output an array of these JSON chunk objects.**  Each chunk should be a separate object in the array.
-
-7. **Title**
-
-     * Give tile of pdf`,
-
+    systemInstruction: `You are a specialized text processing system for technical documentation that:
+    1. Creates meaningful semantic units at logical boundaries
+    2. Maintains chunks of 350-450 characters (maximum 500)
+    3. Ensures 1-2 sentences overlap between adjacent chunks
+    4. Preserves the integrity of technical instructions and specifications
+    5. Preserves exact terminology and naming conventions
+    6. Implements strategic overlapping for sequential content
+    7. Keeps related content together (tables, recipes, references)
+    8. ALWAYS outputs valid, parsable JSON with the EXACT format: [{"chunk": "text"}, {"chunk": "text"}]
+    9. Never includes additional fields beyond "chunk" in the output JSON
+    10. Always completes JSON properly with closing brackets and braces`,
     generationConfig: {
-        responseSchema: schemaofChunk,
+        temperature: 0.1, // Reduced for more consistent output
+        topP: 0.9,
+        responseSchema: schemaOfChunk,
         responseMimeType: 'application/json'
     }
 });
 
-
-export const model_mainTitle = genAI.getGenerativeModel({
+/**
+ * Model for extracting comprehensive summaries of GTNH-related content
+ * that capture key technical details and progression information
+ */
+export const model_mainSummery = genAI.getGenerativeModel({
     model: 'gemini-2.0-flash',
-    systemInstruction: 'Extract the main title of the document.',
+    systemInstruction: `Extract a comprehensive technical summary of GT New Horizons content with these requirements: Length must be between 500 and 1500 characters. Focus on technical gameplay mechanics, progression requirements, and key crafting paths. Preserve specific GTNH terminology, including exact machine names, voltage tiers, and mod interactions. Include critical information about tech progression requirements, key materials and processing chains, machine setups, automation concepts, and cross-mod integration points. Maintain technical accuracy without simplifying complex GTNH mechanics. Use concise, information-dense language optimized for vector embedding to create a comprehensive technical abstract containing the most retrievable concepts from the source material.`,
     generationConfig: {
-        responseSchema: schemaofTitle,
+        temperature: 0.2,
+        topK: 40,
+        topP: 0.9,
+        responseSchema: schemeSummery,
         responseMimeType: 'application/json',
     }
 });
+
+/**
+ * Advanced answer synthesis model that combines information from multiple chunks
+ * prioritizing by relevance scores and maintaining GTNH technical accuracy
+ */
+export const model_answer_synthesis = genAI.getGenerativeModel({
+    model: 'gemini-2.0-flash',
+    systemInstruction: `You are a helpful assistant.(should the response max 250 characters) (should the response max 250 characters) Your behavior depends on the user's query topic. If the user's query is about GT New Horizons: Act as an expert GT New Horizons assistant. Answer concisely and accurately, drawing *only* from provided documents. Do NOT use external knowledge or invent information for GTNH topics. Use precise GTNH terminology (LV, MV, machines, GregTech) found in documents. Focus on progression relevant to documents. Format as a single paragraph. Ensure the character count is between 150 and 250 characters.No links or source references. If a yes/no answer is sufficient and supported by the documents, provide only that answer. Highlight critical warnings *if relevant* and present in documents. Stay strictly on the GTNH topic raised in the query. If the user's query is NOT about GT New Horizons (e.g., general knowledge, simple greetings, math problems): Provide a standard, normal answer using your general knowledge. Do NOT apply any of the GTNH-specific constraints (document-only, character limit, specific terminology focus, single paragraph format). Always respond in English.`,
+    generationConfig: {
+        temperature: 0.2,
+        topK: 40,
+        topP: 0.92,
+        maxOutputTokens: 250,
+    },
+});
+
+
