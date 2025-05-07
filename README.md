@@ -38,20 +38,6 @@ This project applies chunking, summarization, and keyword extraction to document
 - Vector embeddings
 - LLMs for query transformation and answer synthesis
 
-## 📦 Setup & Installation
-
-1. Clone the repository and navigate to the project folder.
-2. Run:
-```bash
-npm install
-cp .env.example .env
-# Update .env with your database and API credentials
-```
-3. Ensure the environment variable `DATA_PATH` is set or use its default value (`data`).
-4. Build the project:
-```bash
-npm run build
-```
 
 ### Core Functions
 - In `main/main.ts`, several functions (`processDocument`, `processDirectory`, `createSectionSummary`, etc.) handle reading and storing document chunks.
