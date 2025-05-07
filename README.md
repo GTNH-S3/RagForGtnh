@@ -40,10 +40,67 @@ This project applies chunking, summarization, and keyword extraction to document
 
 
 ### Core Functions
-- In `main/main.ts`, several functions (`processDocument`, `processDirectory`, `createSectionSummary`, etc.) handle reading and storing document chunks.
-- `Question(question: string)` demonstrates a RAG-based pipeline that retrieves relevant chunks, synthesizes an answer, and returns it.
-- `batchTestQuestions()` runs multiple queries in sequence.
-- `compareSearchSettings()` compares different embedding and keyword weighting strategies.
+Below are brief descriptions for each function referenced in this project:
+
+- **mainPage()**  
+  Retrieves the GTNH wiki main page, parses sections, and returns an array of section objects.
+
+- **introduction(link)**  
+  Fetches titles and paragraphs from a given URL and returns them in two arrays.
+
+- **RateLimiter** (class)  
+  Controls the rate of API calls using a queue and processes them in order.
+
+- **RateLimiter.execute(fn)**  
+  Adds a function to the queue and runs it in a rate-limited manner.
+
+- **initializeDatabase()**  
+  Creates the necessary tables (if they do not exist) and sets up indices for vector search.
+
+- **mainPageInsert(title, href, subtitle)**  
+  Inserts a single record into the `main_page` table.
+
+- **mainPageBulkInsert(pages)**  
+  Inserts multiple records into `main_page` in a single operation.
+
+- **mainPageSelect()**  
+  Fetches all records from the `main_page` table.
+
+- **sectionsInsert(title, keyword, content)**  
+  Inserts a record into the `sections` table with generated embeddings and keywords.
+
+- **sectionsBulkInsert(sections)**  
+  Inserts multiple sections in bulk after generating embeddings.
+
+- **insertChunk(chunk_content, section_title, title)**  
+  Embeds a chunk, extracts its keywords, and inserts it into the `chunks` table.
+
+- **insertChunksBatch(chunks)**  
+  Performs batch insert of multiple chunks with embeddings and keywords.
+
+- **embeddingSectionHybrid(query, settings)**  
+  Transforms the query, embeds it, extracts keywords, and retrieves relevant chunks using a hybrid search.
+
+- **processDocument(filePath, sectionName, fileName)**  
+  Processes a document (PDF or text), creates chunks, and stores them in the database.
+
+- **processDirectory(directoryName)**  
+  Iterates over files in a directory and processes each with `processDocument`.
+
+- **createSectionSummary(directoryName)**  
+  Summarizes a specified section by generating a summary, extracting keywords, and storing them.
+
+- **Question(question, settings)**  
+  Runs the hybrid retrieval and a final RAG pipeline for a given query.
+
+- **processSections(sectionNames)**  
+  Creates summaries for each section and processes all documents in the list.
+
+- **TryQuestion(text)**  
+  Tests a question through the RAG pipeline and logs the result.
+
+- **startEvent()**  
+  Starts an event handler that manages chat interactions.
 
 ## 💡 Tips
 
