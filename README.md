@@ -68,8 +68,8 @@ Below are brief descriptions for each function referenced in this project:
 
 * GTNH installation guide
 * GTNH recommended Java version
-* GTNH optimal JVM arguments
-  **Total Chunks Retrieved:** 357
+* GTNH optimal JVM arguments 
+* Total Chunks Retrieved:** 357
 
 **Answer:**
 To install GTNH, use MultiMC, ATLauncher, Technic, or Prism, as CurseForge has issues with this modpack; also, consult "Installing and Migrating" if you encounter installation problems. For best performance, optimize Java's memory setup or use a Java 17+ installation with Prism/MultiMC. For parameters, allocate 4GB to 6GB of RAM, matching the minimum and maximum. On a low-end PC, offload server lifting to a spare computer, even if it is lower performance, or set up a separate server instance on the same PC.
@@ -82,7 +82,7 @@ To install GTNH, use MultiMC, ATLauncher, Technic, or Prism, as CurseForge has i
 
 * Does GT New Horizons have an official Discord server?
 * What is the official GT New Horizons Discord server invite link?
-  **Total Chunks Retrieved:** 244
+* Total Chunks Retrieved:** 244
 
 **Answer:**
 Yes, the GT New Horizons Discord is available via the link: [https://discord.gg/EXshrPV](https://discord.gg/EXshrPV).
@@ -94,7 +94,7 @@ Yes, the GT New Horizons Discord is available via the link: [https://discord.gg/
 **Sub-query:**
 
 * Does humidity affect GTNH gameplay?
-  **Total Chunks Retrieved:** 119
+* Total Chunks Retrieved:** 119
 
 **Answer:**
 Yes, humidity affects the water output of the Water Tank and Water Pump in GTNH. The Water Tank collects moisture from the air based on the biome's humidity, and the Water Pump's water generation rate is directly influenced by the humidity of the biome.
@@ -108,7 +108,7 @@ Yes, humidity affects the water output of the Water Tank and Water Pump in GTNH.
 * What are the advantages of using subnets in Applied Energistics 2 (AE2) in GT New Horizons?
 * How do subnets improve the performance of an AE2 network in GTNH?
 * What are the best practices for designing and implementing subnets in GTNH's AE2?
-  **Total Chunks Retrieved:** 382
+* Total Chunks Retrieved:** 382
 
 **Answer:**
 Creating AE2 subnetworks helps in several ways, such as sharing power, managing channels, and isolating autocrafting processes. Subnetworks allow you to share power between a main network and its subnetworks using quartz fiber cables, which do not transfer channels. By using subnetworks, you can expose the contents of one network to another through a storage bus connected to an ME Interface, enabling interaction with items stored in the connected network, but this should be used sparingly for performance reasons. Subnets are useful for autocrafting setups, such as assemblers, circuit assembly lines, and sharing liquids.
