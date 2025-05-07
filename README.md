@@ -60,73 +60,59 @@ Below are brief descriptions for each function referenced in this project:
 
 ---
 
-## EXAMPLES
+## SOME ANSWERS
 
-### What is GTNH mod pack?
+### How can I install GTNH and what is best params for it?
 
-**Sub-topics:** Overview, Key Features, Difficulty & Progression, GregTech Integration
+**Sub-queries:**
 
-**Retrieved Chunks:** 448
+* GTNH installation guide
+* GTNH recommended Java version
+* GTNH optimal JVM arguments
+  **Total Chunks Retrieved:** 357
 
 **Answer:**
-GT New Horizons (GTNH) is a GregTech-based modpack for Minecraft 1.7.10, focused on long-term progression through tech tiers. It features complex recipes, gated progression, and heavy use of machines. Best experienced with the quest book and on multiplayer servers.
+To install GTNH, use MultiMC, ATLauncher, Technic, or Prism, as CurseForge has issues with this modpack; also, consult "Installing and Migrating" if you encounter installation problems. For best performance, optimize Java's memory setup or use a Java 17+ installation with Prism/MultiMC. For parameters, allocate 4GB to 6GB of RAM, matching the minimum and maximum. On a low-end PC, offload server lifting to a spare computer, even if it is lower performance, or set up a separate server instance on the same PC.
 
 ---
 
-###  How do I install GTNH? What are the system requirements? Is there a Discord server?
+### Does it have Discord channel for community? and what is link?
 
-**Sub-topics:** Installation, Requirements, Discord Server
+**Sub-queries:**
 
-**Retrieved Chunks:** 343
+* Does GT New Horizons have an official Discord server?
+* What is the official GT New Horizons Discord server invite link?
+  **Total Chunks Retrieved:** 244
 
 **Answer:**
-Install GTNH using MultiMC, ATLauncher, Technic, or Prism (avoid CurseForge). Allocate 4–6 GB RAM and use Java 17+ for better performance. Join the community via [Discord](https://discord.gg/EXshrPV).
+Yes, the GT New Horizons Discord is available via the link: [https://discord.gg/EXshrPV](https://discord.gg/EXshrPV).
 
 ---
 
-### Can I help develop GTNH?
+### Does humidity in the air have an effect?
 
-**Sub-topics:** Contribution and Development
+**Sub-query:**
 
-**Retrieved Chunks:** 101
+* Does humidity affect GTNH gameplay?
+  **Total Chunks Retrieved:** 119
 
 **Answer:**
-Yes! Contributions are welcome via GitHub or Discord. Fork a mod repository, make improvements, and submit pull requests.
+Yes, humidity affects the water output of the Water Tank and Water Pump in GTNH. The Water Tank collects moisture from the air based on the biome's humidity, and the Water Pump's water generation rate is directly influenced by the humidity of the biome.
 
 ---
 
-### What's the fastest way to get power in early GTNH?
+### What does it help me to make subnets in my AE2?
 
-**Sub-topics:** Early Game Power Generation
+**Sub-queries:**
 
-**Retrieved Chunks:** 526
-
-**Answer:**
-Start with basic steam setups, then progress to Cetane-Boosted Diesel in HV. Later, Large Gas Turbines and Solid-Oxide Fuel Cells offer efficient power solutions.
-
----
-
-### Who develops GTNH?
-
-**Sub-topics:** Developer Team, Roles, Contributions
-
-**Retrieved Chunks:** 481
+* What are the advantages of using subnets in Applied Energistics 2 (AE2) in GT New Horizons?
+* How do subnets improve the performance of an AE2 network in GTNH?
+* What are the best practices for designing and implementing subnets in GTNH's AE2?
+  **Total Chunks Retrieved:** 382
 
 **Answer:**
-GTNH is community-developed. Anyone can contribute via GitHub by fixing bugs or adding features. Use the Discord `#mod-dev` channel and follow coding guidelines.
+Creating AE2 subnetworks helps in several ways, such as sharing power, managing channels, and isolating autocrafting processes. Subnetworks allow you to share power between a main network and its subnetworks using quartz fiber cables, which do not transfer channels. By using subnetworks, you can expose the contents of one network to another through a storage bus connected to an ME Interface, enabling interaction with items stored in the connected network, but this should be used sparingly for performance reasons. Subnets are useful for autocrafting setups, such as assemblers, circuit assembly lines, and sharing liquids.
 
----
-
-### Does GTNH cause mental health issues?
-
-**Sub-topics:** Mental Impact
-
-**Retrieved Chunks:** 124
-
-**Answer:**
-GTNH is extremely time-consuming and can be frustrating without proper planning. Solo play may take 3,000+ hours—it's recommended to read the quest book and play with others to avoid burnout.
-
----
 
 
 
