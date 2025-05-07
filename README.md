@@ -60,6 +60,8 @@ Below are brief descriptions for each function referenced in this project:
 
 ---
 
+## EXAMPLES
+
 ### What is GTNH mod pack?
 
 **Sub-topics:** Overview, Key Features, Difficulty & Progression, GregTech Integration
@@ -78,7 +80,7 @@ Install GTNH using MultiMC, ATLauncher, Technic, or Prism (avoid CurseForge). Al
 
 ---
 
-### 🛠Can I help develop GTNH?
+### Can I help develop GTNH?
 
 **Sub-topics:** Contribution and Development
 **Retrieved Chunks:** 101
