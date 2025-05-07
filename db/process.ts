@@ -7,7 +7,7 @@ import { extractKeywords, queryTransformation } from "../ai/aiFunctions.ts";
 class RateLimiter {
   private queue: (() => Promise<void>)[] = [];
   private processing = false;
-  private requestsPerMinute: number;
+  private readonly requestsPerMinute: number;
   private requestsThisMinute = 0;
   private lastResetTime = Date.now();
 
@@ -63,7 +63,7 @@ class RateLimiter {
     }
 
     // Continue processing queue
-    this.processQueue();
+    await this.processQueue();
   }
 }
 
@@ -400,8 +400,11 @@ export async function embeddingSectionHybrid(
 ): Promise<{ allResults: any[][]; queries: string[] }> {
     // Transform the query to handle complex cases
     const { originalQuery, subQueries } = await rateLimitedQueryTransformation(query);
-    console.log(subQueries);
+    console.log(`Original query: ${originalQuery}`);
+  subQueries.forEach((q) => {
+      console.log(`Sub-query: ${q}`);
 
+});
     if (!Array.isArray(subQueries)) {
         throw new Error('Parameter "queries" must be an array');
     }
@@ -415,63 +418,59 @@ export async function embeddingSectionHybrid(
                 rateLimitedExtractKeywords({ chunk_content: subQuery, title: subQuery })
             ]);
 
-            console.log("Keywords:", keywords);
-
             // Format the keywords as a proper PostgreSQL array string
             const keywordArray = `{${keywords.map(k => `"${k.toLowerCase().replace(/"/g, '\\"')}"`).join(',')}}`;
 
             // Get chunks with hybrid scoring and include context windows
             return db`
-    WITH ranked_chunks AS (
-        SELECT
-            chunk_id,
-            chunk_content,
-            page_name,
-            1 - (chunk_embedding <-> ${pgvector.toSql(vec)}) / 2 AS embedding_score,
-            cardinality(
-                array(
-                    SELECT unnest(chunk_keyword)
-                    INTERSECT
-                    SELECT unnest(${keywordArray}::text[])
-                )
-            )::float AS keyword_match_count,
-            (
-                ${settings.EMBEDDING_WEIGHT} * (1 - (chunk_embedding <-> ${pgvector.toSql(vec)}) / 2) +
-                ${settings.KEYWORD_WEIGHT} * LEAST(
-                    cardinality(
-                        array(
-                            SELECT unnest(chunk_keyword)
-                            INTERSECT
-                            SELECT unnest(${keywordArray}::text[])
-                        )
-                    )::float,
-                    5
-                ) / 5
-            ) AS score
-        FROM chunks
-    ),
-    top_chunks AS (
-        SELECT *
-        FROM ranked_chunks
-        ORDER BY score DESC
-        LIMIT ${settings.CHUNK_LIMIT}
-    ),
-    context_chunks AS (
-        SELECT 
-            c.chunk_id,
-            c.chunk_content,
-            c.page_name,
-            c.chunk_keyword,
-            c.timestamp_updated,
-            c.section_id_fk
-        FROM chunks c
-        JOIN top_chunks t
-            ON c.page_name = t.page_name
-            AND c.chunk_id BETWEEN t.chunk_id - ${settings.CONTEXT_WINDOW} AND t.chunk_id + ${settings.CONTEXT_WINDOW}
-    )
-    SELECT DISTINCT *
-    FROM context_chunks
-    ORDER BY page_name, chunk_id
+            WITH ranked_chunks AS (
+    SELECT
+        chunk_id,
+        chunk_content,
+        page_name,
+        1 - (chunk_embedding <-> ${pgvector.toSql(vec)}) / 2 AS embedding_score,
+        (
+            SELECT COUNT(DISTINCT ka_elem)::float
+            FROM unnest(chunk_keyword) AS ck_elem
+            CROSS JOIN unnest(${keywordArray}::text[]) AS ka_elem
+            WHERE ck_elem LIKE '%' || ka_elem || '%'
+        ) AS keyword_match_count,
+        (
+            ${settings.EMBEDDING_WEIGHT} * (1 - (chunk_embedding <-> ${pgvector.toSql(vec)}) / 2) +
+            ${settings.KEYWORD_WEIGHT} * LEAST(
+                (
+                    SELECT COUNT(DISTINCT ka_elem)::float
+                    FROM unnest(chunk_keyword) AS ck_elem
+                    CROSS JOIN unnest(${keywordArray}::text[]) AS ka_elem
+                    WHERE ck_elem LIKE '%' || ka_elem || '%'
+                ),
+                5
+            ) / 5
+        ) AS score
+    FROM chunks
+),
+top_chunks AS (
+    SELECT *
+    FROM ranked_chunks
+    ORDER BY score DESC
+    LIMIT ${settings.CHUNK_LIMIT}
+),
+context_chunks AS (
+    SELECT
+        c.chunk_id,
+        c.chunk_content,
+        c.page_name,
+        c.chunk_keyword,
+        c.timestamp_updated,
+        c.section_id_fk
+    FROM chunks c
+    JOIN top_chunks t
+        ON c.page_name = t.page_name
+        AND c.chunk_id BETWEEN t.chunk_id - ${settings.CONTEXT_WINDOW} AND t.chunk_id + ${settings.CONTEXT_WINDOW}
+)
+SELECT DISTINCT *
+FROM context_chunks
+ORDER BY page_name, chunk_id;
     `.values();
         } catch (error) {
             console.error(`Error retrieving chunks for query "${subQuery}":`, error);

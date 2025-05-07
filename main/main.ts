@@ -1,30 +1,17 @@
-import {
-    extractKeywords,
-    bestChunk,
-    completeRagPipeline,
-    extractMainSummary
-} from '../ai/aiFunctions.ts';
+import {bestChunk, completeRagPipeline, extractKeywords, extractMainSummary} from '../ai/aiFunctions.ts';
 import {processFiles} from '../utils/pdf.ts';
-import {
-    mainPageInsert,
-    mainPageSelect,
-    initializeDatabase,
-    sectionsInsert,
-    insertChunk,
-    embeddingSectionHybrid
-} from '../db/process.ts';
+import {embeddingSectionHybrid, insertChunk, sectionsInsert} from '../db/process.ts';
 import {promises as fs} from "fs";
-import {sleep} from "../utils/sleep.ts";
 import path from 'path';
 import {chatHandler} from "../events/event.ts";
 
 // Configuration
 const BASE_DATA_PATH = process.env.DATA_PATH || 'data';
 const DEFAULT_SEARCH_SETTINGS = {
-    CHUNK_LIMIT: 10,
+    CHUNK_LIMIT: 20,
     EMBEDDING_WEIGHT: 0.9,
     KEYWORD_WEIGHT: 0.1,
-    CONTEXT_WINDOW: 3
+    CONTEXT_WINDOW: 4
 };
 
 /**
@@ -97,58 +84,20 @@ export async function createSectionSummary(directoryName: string): Promise<void>
  * @param settings Optional search settings
  */
 export async function Question(question: string, settings = DEFAULT_SEARCH_SETTINGS): Promise<string> {
-    console.log(`Testing question: "${question}"`);
 
     try {
-        const finalResult = await completeRagPipeline(
+        return await completeRagPipeline(
             question,
             embeddingSectionHybrid(question, settings)
         );
 
-        console.log(`Answer: ${finalResult}`);
-        return finalResult;
     } catch (error : any) {
         console.error(`Error testing question: ${error}`);
         return `Error: ${error.message}`;
     }
 }
 
-/**
- * Batch test multiple questions
- * @param questions Array of questions to test
- */
-async function batchTestQuestions(questions: string[]): Promise<{question: string, answer: string}[]> {
-    const results = [];
 
-    for (const question of questions) {
-        const answer = await Question(question);
-        results.push({ question, answer });
-    }
-
-    return results;
-}
-
-/**
- * Compare different search settings
- * @param question Question to test
- * @param settingsArray Array of different settings to compare
- */
-async function compareSearchSettings(
-    question: string,
-    settingsArray: Array<{name: string, settings: typeof DEFAULT_SEARCH_SETTINGS}>
-): Promise<{settingName: string, answer: string}[]> {
-    const results = [];
-
-    for (const {name, settings} of settingsArray) {
-        console.log(`Testing with settings: ${name}`);
-        const answer = await Question(question, settings);
-        results.push({ settingName: name, answer });
-    }
-
-    return results;
-}
-
-// Example usage functions - uncomment as needed
 
 // Process multiple sections
 async function processSections(sectionNames: string[]): Promise<void> {
@@ -160,40 +109,10 @@ async function processSections(sectionNames: string[]): Promise<void> {
 
 // Main execution
 async function TryQuestion(text: string = 'What is the best way to get steel in GTNH?') {
-    // Uncomment the function you want to use
-
-    // Example 1: Process sections
-    // await processSections(['LV', 'MV', 'HV']);
-
-    // Example 2: Test a single question
-    // await Question(text);
-
-    // Example 3: Batch test multiple questions
-    // const questions = [
-    //     'How do I progress to LV tier?',
-    //     'What is the best way to get steel in GTNH?',
-    //     'How do I automate ore processing?'
-    // ];
-    // const results = await batchTestQuestions(questions);
-    // console.table(results);
-
-    // Example 4: Compare different search settings
-    // const settingsToCompare = [
-    //     {
-    //         name: 'Balanced',
-    //         settings: { CHUNK_LIMIT: 5, EMBEDDING_WEIGHT: 0.6, KEYWORD_WEIGHT: 0.4, CONTEXT_WINDOW: 2 }
-    //     },
-    //     {
-    //         name: 'Embedding Focus',
-    //         settings: { CHUNK_LIMIT: 5, EMBEDDING_WEIGHT: 0.9, KEYWORD_WEIGHT: 0.1, CONTEXT_WINDOW: 2 }
-    //     },
-    //     {
-    //         name: 'Keyword Focus',
-    //         settings: { CHUNK_LIMIT: 5, EMBEDDING_WEIGHT: 0.3, KEYWORD_WEIGHT: 0.7, CONTEXT_WINDOW: 2 }
-    //     }
-    // ];
-    // const comparisonResults = await compareSearchSettings('How do I automate ore processing?', settingsToCompare);
-    // console.table(comparisonResults);
+    console.log(`Testing question: ${text}`);
+    const result = await Question(text);
+    console.log(`Result: ${result}`);
+    return result;
 }
 
 
@@ -203,13 +122,10 @@ async function startEvent() {
 
 }
 
-// Run the event
-//await startEvent();
-
-// Run the main function
-//await TryQuestion("How do I store my itemss");
 
 
-// Uncomment to process a specific directory
+
+
+
 
 
