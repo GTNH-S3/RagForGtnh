@@ -109,7 +109,6 @@ async function processSections(sectionNames: string[]): Promise<void> {
 
 // Main execution
 async function TryQuestion(text: string = 'What is the best way to get steel in GTNH?') {
-    console.log(`Testing question: ${text}`);
     const result = await Question(text);
     console.log(`Result: ${result}`);
     return result;

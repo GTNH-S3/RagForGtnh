@@ -192,9 +192,7 @@ export async function synthesizeAnswer(originalQuestion: string, retrievedChunks
 
     const text = retrievedChunks.join('\n');
     const textF = "*******************QUESTİON" + originalQuestion + "QUESTİON*******************\n\**** \n" +
-        "\n" +
-        "Do not use more than 250 characters including spaces.*" +
-        "\n" +
+        '\n'
         + text;
 
     try {
@@ -227,14 +225,15 @@ export async function completeRagPipeline(
         // Step 2: Retrieve relevant chunks (already in progress via the promise)
         const {allResults} = await embeddingPromise;
         const uniqueResults: any[] = [];
+        const rawResults: any[] = [];
 
 // The structure appears to be three levels deep
         allResults.forEach((chunks: any) => {
             chunks.forEach((chunk: any) => {
                 uniqueResults.push(chunk[1]);
+                rawResults.push(chunk);
             });
         });
-
         console.log("Total Chunks Retrieved: ", uniqueResults.length);
         return await synthesizeAnswer(query,uniqueResults);
     } catch (error) {

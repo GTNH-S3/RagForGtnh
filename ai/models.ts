@@ -119,7 +119,6 @@ export const model_answer_synthesis = genAI.getGenerativeModel({
         temperature: 0.2,
         topK: 40,
         topP: 0.92,
-        maxOutputTokens: 65, // minecraft text size limit
     },
 });
 
