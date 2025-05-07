@@ -29,7 +29,6 @@ This project applies chunking, summarization, and keyword extraction to document
 │   └── sleep.ts             # Utility functions
 └── main/
     └── main.ts              # Main Functions
-    └── test.ts              # Example usage and testing
 ```
 
 ## 🔧 Tech Stack
