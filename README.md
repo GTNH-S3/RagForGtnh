@@ -65,7 +65,9 @@ Below are brief descriptions for each function referenced in this project:
 ### What is GTNH mod pack?
 
 **Sub-topics:** Overview, Key Features, Difficulty & Progression, GregTech Integration
+
 **Retrieved Chunks:** 448
+
 **Answer:**
 GT New Horizons (GTNH) is a GregTech-based modpack for Minecraft 1.7.10, focused on long-term progression through tech tiers. It features complex recipes, gated progression, and heavy use of machines. Best experienced with the quest book and on multiplayer servers.
 
@@ -74,7 +76,9 @@ GT New Horizons (GTNH) is a GregTech-based modpack for Minecraft 1.7.10, focused
 ###  How do I install GTNH? What are the system requirements? Is there a Discord server?
 
 **Sub-topics:** Installation, Requirements, Discord Server
+
 **Retrieved Chunks:** 343
+
 **Answer:**
 Install GTNH using MultiMC, ATLauncher, Technic, or Prism (avoid CurseForge). Allocate 4–6 GB RAM and use Java 17+ for better performance. Join the community via [Discord](https://discord.gg/EXshrPV).
 
@@ -83,7 +87,9 @@ Install GTNH using MultiMC, ATLauncher, Technic, or Prism (avoid CurseForge). Al
 ### Can I help develop GTNH?
 
 **Sub-topics:** Contribution and Development
+
 **Retrieved Chunks:** 101
+
 **Answer:**
 Yes! Contributions are welcome via GitHub or Discord. Fork a mod repository, make improvements, and submit pull requests.
 
@@ -92,7 +98,9 @@ Yes! Contributions are welcome via GitHub or Discord. Fork a mod repository, mak
 ### What's the fastest way to get power in early GTNH?
 
 **Sub-topics:** Early Game Power Generation
+
 **Retrieved Chunks:** 526
+
 **Answer:**
 Start with basic steam setups, then progress to Cetane-Boosted Diesel in HV. Later, Large Gas Turbines and Solid-Oxide Fuel Cells offer efficient power solutions.
 
@@ -101,7 +109,9 @@ Start with basic steam setups, then progress to Cetane-Boosted Diesel in HV. Lat
 ### Who develops GTNH?
 
 **Sub-topics:** Developer Team, Roles, Contributions
+
 **Retrieved Chunks:** 481
+
 **Answer:**
 GTNH is community-developed. Anyone can contribute via GitHub by fixing bugs or adding features. Use the Discord `#mod-dev` channel and follow coding guidelines.
 
@@ -110,7 +120,9 @@ GTNH is community-developed. Anyone can contribute via GitHub by fixing bugs or 
 ### Does GTNH cause mental health issues?
 
 **Sub-topics:** Mental Impact
+
 **Retrieved Chunks:** 124
+
 **Answer:**
 GTNH is extremely time-consuming and can be frustrating without proper planning. Solo play may take 3,000+ hours—it's recommended to read the quest book and play with others to avoid burnout.
 
