@@ -1,5 +1,4 @@
 import {model_answer_synthesis, model_best_chunk, model_keyword, model_mainSummery, model_queryTransformation, model_test} from "./models.ts";
-import type {GenerateContentResult} from "@google/generative-ai";
 
 /**
  * Extracts technical keywords from the provided GTNH-related content.
@@ -19,22 +18,6 @@ export async function extractKeywords(text: { chunk_content: string; title: stri
     }
 }
 
-/**
- * Tests the GTNH knowledge model with a simple query.
- * Used primarily for validation and testing of the model.
- *
- * @param text User query about GT New Horizons
- * @returns Promise<string> Model's response to the query
- */
-export async function testModel(text: string): Promise<string> {
-    try {
-        const result = await model_test.generateContent(text);
-        return result.response.text();
-    } catch (error) {
-        console.error('Error in test model:', error);
-        return "Sorry, I encountered an error processing your request.";
-    }
-}
 
 /**
  * Decomposes complex queries into multiple semantically varied sub-queries
@@ -210,9 +193,9 @@ export async function synthesizeAnswer(originalQuestion: string, retrievedChunks
     const text = retrievedChunks.join('\n');
     const textF = "*******************QUESTİON" + originalQuestion + "QUESTİON*******************\n\**** \n" +
         "\n" +
-        "Do not use more than 250 characters including spaces.*\n" +
-        "Do not use more than 250 characters including spaces.*Do not use more than 250 characters*\n" +
-        "Do not use more than 250 characters including spaces.*\n" + text;
+        "Do not use more than 250 characters including spaces.*" +
+        "\n" +
+        + text;
 
     try {
 
@@ -244,17 +227,15 @@ export async function completeRagPipeline(
         // Step 2: Retrieve relevant chunks (already in progress via the promise)
         const {allResults} = await embeddingPromise;
         const uniqueResults: any[] = [];
-        const log: any[] = [];
 
 // The structure appears to be three levels deep
         allResults.forEach((chunks: any) => {
             chunks.forEach((chunk: any) => {
                 uniqueResults.push(chunk[1]);
-                log.push(chunk);
             });
         });
 
-        console.log(log)
+        console.log("Total Chunks Retrieved: ", uniqueResults.length);
         return await synthesizeAnswer(query,uniqueResults);
     } catch (error) {
         console.error('Error in RAG pipeline:', error);

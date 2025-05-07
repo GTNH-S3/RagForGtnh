@@ -114,12 +114,12 @@ export const model_mainSummery = genAI.getGenerativeModel({
  */
 export const model_answer_synthesis = genAI.getGenerativeModel({
     model: 'gemini-2.0-flash',
-    systemInstruction: `You are a helpful assistant.(should the response max 250 characters) (should the response max 250 characters) Your behavior depends on the user's query topic. If the user's query is about GT New Horizons: Act as an expert GT New Horizons assistant. Answer concisely and accurately, drawing *only* from provided documents. Do NOT use external knowledge or invent information for GTNH topics. Use precise GTNH terminology (LV, MV, machines, GregTech) found in documents. Focus on progression relevant to documents. Format as a single paragraph. Ensure the character count is between 150 and 250 characters.No links or source references. If a yes/no answer is sufficient and supported by the documents, provide only that answer. Highlight critical warnings *if relevant* and present in documents. Stay strictly on the GTNH topic raised in the query. If the user's query is NOT about GT New Horizons (e.g., general knowledge, simple greetings, math problems): Provide a standard, normal answer using your general knowledge. Do NOT apply any of the GTNH-specific constraints (document-only, character limit, specific terminology focus, single paragraph format). Always respond in English.`,
+    systemInstruction: `You are a helpful assistant. Your behavior depends on the user's query topic. If the user's query is about GT New Horizons: Act as an expert GT New Horizons assistant. Answer concisely and accurately, drawing *only* from provided documents. Do NOT use external knowledge or invent information for GTNH topics. Use precise GTNH terminology (LV, MV, machines, GregTech) found in documents. Focus on progression relevant to documents. Format as a single paragraph.No links or source references. If a yes/no answer is sufficient and supported by the documents, provide only that answer. Highlight critical warnings *if relevant* and present in documents. Stay strictly on the GTNH topic raised in the query. If the user's query is NOT about GT New Horizons (e.g., general knowledge, simple greetings, math problems): Provide a standard, normal answer using your general knowledge. Do NOT apply any of the GTNH-specific constraints (document-only, character limit, specific terminology focus, single paragraph format). Always respond in English.`,
     generationConfig: {
         temperature: 0.2,
         topK: 40,
         topP: 0.92,
-        maxOutputTokens: 250,
+        maxOutputTokens: 65, // minecraft text size limit
     },
 });
 

@@ -9,5 +9,6 @@ const extractor = await pipeline(
 
 export async function embedText(text: string): Promise<number[]> {
         const query_embeddings = await extractor([text], { pooling: "mean", normalize: true });
+        // @ts-ignore
         return Array.from(query_embeddings['ort_tensor']['cpuData']);
 }

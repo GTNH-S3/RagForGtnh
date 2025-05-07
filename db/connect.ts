@@ -2,12 +2,12 @@ import { SQL } from "bun";
 import { config } from "dotenv";
 config();
 
-export const HOST = process.env.DB_HOST || 'localhost';
-export const PORT = process.env.DB_PORT || '5432';
-export const USER = process.env.DB_USER || 'user';
-export const PASSWORD = process.env.DB_PASSWORD || 'password';
-export const DATABASE = process.env.DB_NAME || 'database';
-export const URL = process.env.DB_URL || 'postgresql://localhost:5432/database';
+export const HOST = process.env.DB_HOST
+export const PORT = process.env.DB_PORT
+export const USER = process.env.DB_USER
+export const PASSWORD = process.env.DB_PASSWORD
+export const DATABASE = process.env.DB_NAME
+export const URL = process.env.DB_URL
 
 let db;
 try {
